@@ -8,5 +8,7 @@ public interface EquipoService {
     List<EquipoDTO> getEquipos();
     EquipoDTO getEquipoById(Long id);
     List<EquipoDTO> getByNombre(String nombre);
-
+    EquipoDTO crear(EquipoDTO equipo);
+    EquipoDTO modificar(EquipoDTO equipo);
+    EquipoDTO eliminar(Long id);
 }

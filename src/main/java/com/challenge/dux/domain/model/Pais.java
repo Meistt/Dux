@@ -9,6 +9,11 @@ import lombok.Setter;
 @Table(name = "pais")
 public class Pais {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nombre;
+
+    public Pais() {
+    }
 }
