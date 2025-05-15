@@ -1,9 +1,9 @@
 package com.challenge.dux.domain.interfaces;
 
-import com.challenge.dux.domain.model.Equipo;
+import com.challenge.dux.application.dto.EquipoDTO;
 
 import java.util.List;
 
 public interface EquipoService {
-    public List<Equipo> getEquipos();
+    public List<EquipoDTO> getEquipos();
 }

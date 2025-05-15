@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter  @Setter @Entity
+@Entity
+@Getter @Setter
+@Table(name = "equipo")
 public class Equipo {
     @Id
     private Long id;
@@ -14,6 +16,4 @@ public class Equipo {
     @ManyToOne
     @JoinColumn(name = "liga_id")
     private Liga liga;
-
-
 }
