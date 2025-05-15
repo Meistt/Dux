@@ -10,23 +10,30 @@ import java.util.List;
 
 @RestController
 @ControllerAdvice
-@RequestMapping("/api")
+@RequestMapping("/api/equipos")
 public class EquiposController {
 
     @Autowired
     EquipoService service;
 
-    @GetMapping("/equipos")
+    @GetMapping()
     public ResponseEntity<List<EquipoDTO>> GetEquipos(){
         List<EquipoDTO> list = this.service.getEquipos();
 
         return list != null ? ResponseEntity.ok().body(list) : ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/equipos/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<EquipoDTO> GetEquipoById(@PathVariable("id") Long id){
         EquipoDTO response = this.service.getEquipoById(id);
 
         return response != null ? ResponseEntity.ok().body(response) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<EquipoDTO>> GetEquiposByNombre(@RequestParam("nombre") String nombre){
+        List<EquipoDTO> list = this.service.getByNombre(nombre);
+
+        return list != null ? ResponseEntity.ok().body(list) : ResponseEntity.notFound().build();
     }
 }

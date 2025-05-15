@@ -44,4 +44,14 @@ public class EquipoServiceImpl implements EquipoService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<EquipoDTO> getByNombre(String nombre) {
+        try {
+            List<Equipo> list = this.repository.findByNombreContainingIgnoreCase(nombre);
+            return mapper.toDTOList(list);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
