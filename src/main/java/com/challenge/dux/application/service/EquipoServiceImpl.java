@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EquipoServiceImpl implements EquipoService {
@@ -32,5 +33,15 @@ public class EquipoServiceImpl implements EquipoService {
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    @Override
+    public EquipoDTO getEquipoById(Long id) {
+        try {
+            Equipo equipo = this.repository.findById(id).get();
+            return mapper.toDTO(equipo);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

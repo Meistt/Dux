@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface EquipoService {
     public List<EquipoDTO> getEquipos();
+    public EquipoDTO getEquipoById(Long id);
 }

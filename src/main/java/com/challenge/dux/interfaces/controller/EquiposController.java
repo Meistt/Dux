@@ -4,10 +4,7 @@ import com.challenge.dux.application.dto.EquipoDTO;
 import com.challenge.dux.domain.interfaces.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +21,12 @@ public class EquiposController {
         List<EquipoDTO> list = this.service.getEquipos();
 
         return list != null ? ResponseEntity.ok().body(list) : ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/equipos/{id}")
+    public ResponseEntity<EquipoDTO> GetEquipoById(@PathVariable("id") Long id){
+        EquipoDTO response = this.service.getEquipoById(id);
+
+        return response != null ? ResponseEntity.ok().body(response) : ResponseEntity.notFound().build();
     }
 }
