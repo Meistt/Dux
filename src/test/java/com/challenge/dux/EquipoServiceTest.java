@@ -7,6 +7,7 @@ import com.challenge.dux.domain.model.Equipo;
 import com.challenge.dux.domain.model.Liga;
 import com.challenge.dux.domain.model.Pais;
 import com.challenge.dux.infrastructure.repository.EquipoRepository;
+import com.challenge.dux.infrastructure.repository.LigaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +28,9 @@ public class EquipoServiceTest {
 
     @Mock
     private EquipoRepository equipoRepository;
+
+    @Mock
+    private LigaRepository ligaRepository;
 
     @Mock
     private EquipoMapper equipoMapper;
@@ -92,6 +98,25 @@ public class EquipoServiceTest {
         assertEquals(2, resultado.size());
         assertTrue(resultado.stream().anyMatch(e -> e.getNombre().equals("Real Madrid")));
         assertTrue(resultado.stream().anyMatch(e -> e.getNombre().equals("Atlético de Madrid")));
+    }
+
+    @Test
+    public void crearEquipoTest(){
+        EquipoDTO dto = new EquipoDTO(null, "Boca Juniors", "Primera División", "Argentina");
+        Liga liga = new Liga(1L, "Primera División", new Pais(1L, "Argentina"));
+        Equipo guardado = new Equipo(10L, "Boca Juniors", liga);
+
+        when(ligaRepository.findByNombreContainingIgnoreCase("Primera División")).thenReturn(liga);
+        when(equipoRepository.save(any(Equipo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(equipoRepository.findByNombre("Boca Juniors")).thenReturn(guardado);
+
+        EquipoDTO resultado = equipoService.crear(dto);
+
+        assertNotNull(resultado.getId());
+        assertEquals(10L, resultado.getId());
+        assertEquals("Boca Juniors", resultado.getNombre());
+        verify(equipoRepository).save(guardado);
+
     }
 
     private List<EquipoDTO> getEquipoDTOConCoincidenciaList() {
