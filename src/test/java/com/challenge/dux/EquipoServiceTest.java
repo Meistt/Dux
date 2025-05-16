@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -46,6 +47,28 @@ public class EquipoServiceTest {
         assertEquals(4, resultado.size());
         assertNotNull(resultado);
         assertEquals("FC Barcelona", resultado.get(2).getNombre());
+    }
+
+    @Test
+    public void getEquipoByIdTest(){
+        Equipo equipo = givenTengoUnEquipoDeFutbolQueQuieroBuscar();
+        EquipoDTO dto = new EquipoDTO(1L, "Botafogo", "Copa Libertadores", "Brasil");
+
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipo));
+        when(equipoMapper.toDTO(equipo)).thenReturn(dto);
+
+        EquipoDTO resultado = equipoService.getEquipoById(1L);
+
+        assertNotNull(equipo);
+        assertEquals(equipo.getNombre(), resultado.getNombre());
+
+    }
+
+    private Equipo givenTengoUnEquipoDeFutbolQueQuieroBuscar() {
+        Pais Brasil = new Pais(1L, "Brasil");
+        Liga LigaBrasil = new Liga(1L, "Copa Libertadores", Brasil);
+
+        return new Equipo(1L, "Botafogo", LigaBrasil);
     }
 
     private List<EquipoDTO> getEquipoDTOList() {
