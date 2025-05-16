@@ -7,8 +7,6 @@ import com.challenge.dux.domain.model.Equipo;
 import com.challenge.dux.domain.model.Liga;
 import com.challenge.dux.domain.model.Pais;
 import com.challenge.dux.infrastructure.repository.EquipoRepository;
-import com.challenge.dux.infrastructure.repository.LigaRepository;
-import com.challenge.dux.infrastructure.repository.PaisRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -61,7 +59,46 @@ public class EquipoServiceTest {
 
         assertNotNull(equipo);
         assertEquals(equipo.getNombre(), resultado.getNombre());
+    }
 
+    @Test
+    public void getEquipoByNombreTest(){
+        String nombreBuscado = "boca";
+
+        List<Equipo> equipos = List.of(new Equipo(1L, "Boca Juniors", new Liga(1L, "Liga Profesional", new Pais(1L, "Argentina"))));
+        List<EquipoDTO> equipoDTOs = List.of(new EquipoDTO(1L, "Boca Juniors", "Liga Profesional", "Argentina") );
+
+        when(equipoRepository.findByNombreContainingIgnoreCase(nombreBuscado)).thenReturn(equipos);
+        when(equipoMapper.toDTOList(equipos)).thenReturn(equipoDTOs);
+
+        List<EquipoDTO> resultado = equipoService.getByNombre(nombreBuscado);
+
+        assertEquals(1, resultado.size());
+        assertEquals("Boca Juniors", resultado.get(0).getNombre());
+    }
+
+    @Test
+    public void getEquiposConMasDeUnaCoincidenciaTest(){
+        String nombreBuscado = "madrid";
+
+        List<Equipo> equipos = getEquiposList();
+        List<EquipoDTO> equipoDTOs = getEquipoDTOConCoincidenciaList();
+
+        when(equipoRepository.findByNombreContainingIgnoreCase(nombreBuscado)).thenReturn(equipos);
+        when(equipoMapper.toDTOList(equipos)).thenReturn(equipoDTOs);
+
+        List<EquipoDTO> resultado = equipoService.getByNombre(nombreBuscado);
+
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.stream().anyMatch(e -> e.getNombre().equals("Real Madrid")));
+        assertTrue(resultado.stream().anyMatch(e -> e.getNombre().equals("Atlético de Madrid")));
+    }
+
+    private List<EquipoDTO> getEquipoDTOConCoincidenciaList() {
+        return List.of(
+                new EquipoDTO(1L, "Real Madrid", "La Liga", "España"),
+                new EquipoDTO(2L, "Atlético de Madrid", "La Liga", "España")
+        );
     }
 
     private Equipo givenTengoUnEquipoDeFutbolQueQuieroBuscar() {
@@ -70,6 +107,14 @@ public class EquipoServiceTest {
 
         return new Equipo(1L, "Botafogo", LigaBrasil);
     }
+
+    private List<Equipo> getEquiposList() {
+        return List.of(
+                new Equipo(1L, "Real Madrid", new Liga(1L, "La Liga", new Pais(1L, "España"))),
+                new Equipo(2L, "Atlético de Madrid", new Liga(1L, "La Liga", new Pais(1L, "España")))
+        );
+    }
+
 
     private List<EquipoDTO> getEquipoDTOList() {
         List<EquipoDTO> dtoList = new ArrayList<>();
