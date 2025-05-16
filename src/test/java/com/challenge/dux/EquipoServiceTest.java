@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,11 +112,11 @@ public class EquipoServiceTest {
         when(equipoRepository.findByNombre("Boca Juniors")).thenReturn(guardado);
 
         EquipoDTO resultado = equipoService.crear(dto);
-
+        Equipo esperado = new Equipo(null, "Boca Juniors", liga);
         assertNotNull(resultado.getId());
         assertEquals(10L, resultado.getId());
         assertEquals("Boca Juniors", resultado.getNombre());
-        verify(equipoRepository).save(guardado);
+        verify(equipoRepository).save(refEq(esperado));
 
     }
 
