@@ -1,6 +1,7 @@
 package com.challenge.dux.application.service;
 
 import com.challenge.dux.application.dto.EquipoDTO;
+import com.challenge.dux.application.exceptions.RecursoNoEncontradoException;
 import com.challenge.dux.application.mapper.EquipoMapper;
 import com.challenge.dux.domain.interfaces.EquipoService;
 import com.challenge.dux.domain.model.Equipo;
@@ -96,13 +97,10 @@ public class EquipoServiceImpl implements EquipoService {
     }
 
     @Override
-    public EquipoDTO eliminar(Long id) {
-        Equipo equipo = this.repository.findById(id).get();
-
-        if (equipo != null){
-            this.repository.delete(equipo);
-        }
-        return mapper.toDTO(equipo);
+    public void eliminar(Long id) {
+        Equipo equipo = repository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado con id " + id));
+        repository.delete(equipo);
     }
 
     private Equipo setEquipoInfo(Equipo aux, String nombre, Liga liga) {
@@ -111,7 +109,7 @@ public class EquipoServiceImpl implements EquipoService {
         return aux;
     }
 
-    private Pais getPais(String nombre) {
+    public Pais getPais(String nombre) {
         Pais pais = this.paisRepository.findByNombreContainingIgnoreCase(nombre);
         if (pais == null) {
             pais = new Pais();
@@ -121,7 +119,7 @@ public class EquipoServiceImpl implements EquipoService {
         return pais;
     }
 
-    private Liga getLiga(String liga, Pais pais) {
+    public Liga getLiga(String liga, Pais pais) {
         Liga aux = ligaRepository.findByNombreContainingIgnoreCase(liga);
         if (aux == null) {
             aux = new Liga();

@@ -54,8 +54,7 @@ public class EquiposController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable() Long id){
-        return this.service.eliminar(id) == null ?
-                ResponseEntity.notFound().build() :
-                ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        service.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

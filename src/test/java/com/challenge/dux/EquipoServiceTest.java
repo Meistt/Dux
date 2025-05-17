@@ -21,8 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EquipoServiceTest {
@@ -117,8 +116,45 @@ public class EquipoServiceTest {
         assertEquals(10L, resultado.getId());
         assertEquals("Boca Juniors", resultado.getNombre());
         verify(equipoRepository).save(refEq(esperado));
+    }
+
+    @Test
+    public void modificarEquipoTest(){
+        Pais Colombia = new Pais(2L, "Colombia");
+        Liga LigaColombiana = new Liga(2L, "Copa Colombia", Colombia);
+
+        Equipo equipo = givenTengoUnEquipoDeFutbolQueQuieroBuscar();
+
+        whenModificoLosDatosDelEquipo(equipo);
+
+        when(equipoRepository.findById(2L)).thenReturn(Optional.of(equipo));
+        when(equipoRepository.save(any(Equipo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        doReturn(Colombia).when(equipoService).getPais("Argentina");
+        doReturn(LigaColombiana).when(equipoService).getLiga("Primera División", Colombia);
 
     }
+
+    @Test
+    public void eliminarEquipoTest(){
+        Equipo equipo = givenTengoUnEquipoDeFutbolQueQuieroBuscar();
+
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipo));
+
+        equipoService.eliminar(equipo.getId());
+
+        verify(equipoRepository).delete(equipo);
+
+    }
+
+
+    private void whenModificoLosDatosDelEquipo(Equipo equipo) {
+        Pais Colombia = new Pais(2L, "Colombia");
+        Liga LigaColombiana = new Liga(2L, "Copa Colombia", Colombia);
+        equipo.setNombre("Bogotá F.C");
+        equipo.setLiga(LigaColombiana);
+    }
+
 
     private List<EquipoDTO> getEquipoDTOConCoincidenciaList() {
         return List.of(

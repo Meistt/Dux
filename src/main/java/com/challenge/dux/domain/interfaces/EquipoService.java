@@ -10,5 +10,5 @@ public interface EquipoService {
     List<EquipoDTO> getByNombre(String nombre);
     EquipoDTO crear(EquipoDTO equipo);
     EquipoDTO modificar(EquipoDTO equipo);
-    EquipoDTO eliminar(Long id);
+    void eliminar(Long id);
 }
