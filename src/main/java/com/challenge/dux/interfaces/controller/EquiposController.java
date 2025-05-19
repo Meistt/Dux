@@ -49,7 +49,7 @@ public class EquiposController {
     @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     @ApiResponse(responseCode = "404", description = "No se encontraron coincidencias")
     @GetMapping("/buscar")
-    public ResponseEntity<List<EquipoDTO>> GetEquiposByNombre(@NotBlank @Pattern(regexp = "^[a-zA-Z ]$") @RequestParam("nombre") String nombre){
+    public ResponseEntity<List<EquipoDTO>> GetEquiposByNombre(@NotBlank @Pattern(regexp = "^[a-zA-Z ]+$") @RequestParam("nombre") String nombre){
         List<EquipoDTO> list = this.service.getByNombre(nombre);
 
         return list != null ? ResponseEntity.ok().body(list) : ResponseEntity.notFound().build();

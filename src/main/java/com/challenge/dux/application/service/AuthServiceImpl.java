@@ -8,8 +8,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,18 +19,21 @@ import java.util.Map;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
+    private SecretKey secretKey;
+
     private final Map<String, String> users = new HashMap<>();
-    private final String SECRET_KEY = String.valueOf(Keys.secretKeyFor(SignatureAlgorithm.HS256));
+    @Autowired
+    private SecretKey jwtSecretKey;
 
     @PostConstruct
     public void init() {
         users.put("test", "12345");
-
     }
 
     @Override
     public AuthResponse getToken(UserLogin user) {
-        if (existeUsuario()){
+        if (existeUsuario(user)){
             return createTokenUser(user);
         }
         throw new RecursoNoEncontradoException("Usuario no encontrado");
@@ -39,12 +44,13 @@ public class AuthServiceImpl implements AuthService {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
+                .signWith(jwtSecretKey)
                 .compact();
         return new AuthResponse(token);
     }
 
-    private boolean existeUsuario() {
-        return users.containsKey("test") && users.get("test").equals("12345");
+    private boolean existeUsuario(UserLogin user) {
+        return users.containsKey("test") &&
+                users.get(user.getUsername()).equals(user.getPassword());
     }
 }
