@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface EquipoRepository extends JpaRepository<Equipo, Long> {
     List<Equipo> findByNombreContainingIgnoreCase(String nombre);
-    List<Equipo> findByLiga_NombreIgnoreCase(String nombre);
-
     Equipo findByNombre(String nombre);
 }

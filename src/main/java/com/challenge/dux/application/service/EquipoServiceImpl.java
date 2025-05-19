@@ -47,7 +47,8 @@ public class EquipoServiceImpl implements EquipoService {
     @Override
     public EquipoDTO getEquipoById(Long id) {
         try {
-            Equipo equipo = this.repository.findById(id).get();
+            Equipo equipo = this.repository.findById(id)
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado"));
             return mapper.toDTO(equipo);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -66,28 +67,25 @@ public class EquipoServiceImpl implements EquipoService {
 
     @Override
     public EquipoDTO crear(EquipoDTO dto) {
-        try {
-            Equipo equipo = new Equipo();
-            Liga liga = ligaRepository.findByNombreContainingIgnoreCase(dto.getLiga());
-            if (liga != null) {
-                equipo.setNombre(dto.getNombre());
-                equipo.setLiga(liga);
-                this.repository.save(equipo);
-                equipo = this.repository.findByNombre(dto.getNombre());
-                dto.setId(equipo.getId());
-                return dto;
+        Liga liga = ligaRepository.findByNombreContainingIgnoreCase(dto.getLiga());
 
-            }else
-                throw new RuntimeException("Liga NO existe");
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        if (liga == null) {
+            throw new RecursoNoEncontradoException("Liga no encontrada: " + dto.getLiga());
         }
+
+        Equipo equipo = new Equipo();
+        equipo.setNombre(dto.getNombre());
+        equipo.setLiga(liga);
+
+        Equipo equipoGuardado = repository.save(equipo);
+
+        return new EquipoDTO(equipoGuardado.getId(), equipoGuardado.getNombre(), liga.getNombre(), liga.getPais().getNombre());
     }
 
     @Override
     public EquipoDTO modificar(EquipoDTO equipo) {
         Equipo aux = repository.findById(equipo.getId())
-                .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID " + equipo.getId()));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado"));
 
         Pais pais = getPais(equipo.getPais());
         Liga liga = getLiga(equipo.getLiga(), pais);
@@ -99,7 +97,7 @@ public class EquipoServiceImpl implements EquipoService {
     @Override
     public void eliminar(Long id) {
         Equipo equipo = repository.findById(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado con id " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Equipo no encontrado"));
         repository.delete(equipo);
     }
 

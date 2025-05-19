@@ -1,5 +1,6 @@
 package com.challenge.dux.application.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EquipoDTO {
     private Long id;
+
+    @NotBlank
     private String nombre;
+
+    @NotBlank
     private String liga;
+
+    @NotBlank
     private String pais;
 
 }
