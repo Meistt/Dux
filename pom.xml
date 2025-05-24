@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.challenge</groupId>
-    <artifactId>dux</artifactId>
+    <artifactId>api-equipos</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dux</name>
-    <description>dux</description>
+    <name>api-equipos</name>
+    <description>api-equipos</description>
     <url/>
     <licenses>
         <license/>

@@ -139,7 +139,3 @@ La API incluye documentación interactiva disponible en:
 - H2 base de datos en memoria
 - Docker para contenerización
 
-
-
-
-
